@@ -1,0 +1,2 @@
+# 笔记列表
+GET http://localhost:10020/notes/note?pageNum=1&pageSize=2

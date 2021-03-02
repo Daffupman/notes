@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.daff.notes.mapper.NoteMapper">
+  <resultMap id="BaseResultMap" type="io.daff.notes.entity.po.Note">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="category1_id" jdbcType="BIGINT" property="category1Id" />
+    <result column="category2_id" jdbcType="BIGINT" property="category2Id" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="cover" jdbcType="VARCHAR" property="cover" />
+    <result column="doc_count" jdbcType="INTEGER" property="docCount" />
+    <result column="view_count" jdbcType="INTEGER" property="viewCount" />
+    <result column="vote_count" jdbcType="INTEGER" property="voteCount" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from note
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="io.daff.notes.entity.po.Note">
+    insert into note (id, name, category1_id,
+      category2_id, description, cover,
+      doc_count, view_count, vote_count
+      )
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{category1Id,jdbcType=BIGINT},
+      #{category2Id,jdbcType=BIGINT}, #{description,jdbcType=VARCHAR}, #{cover,jdbcType=VARCHAR},
+      #{docCount,jdbcType=INTEGER}, #{viewCount,jdbcType=INTEGER}, #{voteCount,jdbcType=INTEGER}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="io.daff.notes.entity.po.Note">
+    update note
+    set name = #{name,jdbcType=VARCHAR},
+      category1_id = #{category1Id,jdbcType=BIGINT},
+      category2_id = #{category2Id,jdbcType=BIGINT},
+      description = #{description,jdbcType=VARCHAR},
+      cover = #{cover,jdbcType=VARCHAR},
+      doc_count = #{docCount,jdbcType=INTEGER},
+      view_count = #{viewCount,jdbcType=INTEGER},
+      vote_count = #{voteCount,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select id, name, category1_id, category2_id, description, cover, doc_count, view_count,
+    vote_count
+    from note
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, name, category1_id, category2_id, description, cover, doc_count, view_count,
+    vote_count
+    from note
+  </select>
+  <sql id="baseSelectFields">
+    id, name, category1_id, category2_id, description, cover, doc_count, view_count, vote_count
+  </sql>
+  <insert id="batchInsert" keyProperty="id" useGeneratedKeys="true">
+    insert into note(
+	  <trim suffixOverrides=",">
+		<if test="collection[0].name != null and collection[0].name != ''">name,</if>
+		<if test="collection[0].category1Id != null">category1_id,</if>
+		<if test="collection[0].category2Id != null">category2_id,</if>
+		<if test="collection[0].description != null and collection[0].description != ''">description,</if>
+		<if test="collection[0].cover != null and collection[0].cover != ''">cover,</if>
+		<if test="collection[0].docCount != null">doc_count,</if>
+		<if test="collection[0].viewCount != null">view_count,</if>
+		<if test="collection[0].voteCount != null">vote_count,</if>
+	  </trim>
+	)
+	values
+	<foreach collection="list" item="item" separator=",">
+	(
+	  <trim suffixOverrides=",">
+		<if test="item.name != null and item.name != ''">#{item.name},</if>
+		<if test="item.category1Id != null">#{item.category1Id},</if>
+		<if test="item.category2Id != null">#{item.category2Id},</if>
+		<if test="item.description != null and item.description != ''">#{item.description},</if>
+		<if test="item.cover != null and item.cover != ''">#{item.cover},</if>
+		<if test="item.docCount != null">#{item.docCount},</if>
+		<if test="item.viewCount != null">#{item.viewCount},</if>
+		<if test="item.voteCount != null">#{item.voteCount},</if>
+	  </trim>
+	)
+	</foreach>
+  </insert>
+  <delete id="deleteByIds">
+    delete from note
+	where id
+	  <foreach collection="collection" item="item" open="in (" close=")" separator=",">
+		#{item}
+	  </foreach>
+  </delete>
+  <select id="select" resultMap="BaseResultMap">
+    select <include refid="baseSelectFields"/>
+	from note
+	<where>
+	  <trim suffixOverrides=",">
+		<if test="name != null and name != ''">
+		  name = #{name}
+		</if>
+		<if test="category1Id != null">
+		  category1_id = #{category1Id}
+		</if>
+		<if test="category2Id != null">
+		  category2_id = #{category2Id}
+		</if>
+		<if test="description != null and description != ''">
+		  description = #{description}
+		</if>
+		<if test="cover != null and cover != ''">
+		  cover = #{cover}
+		</if>
+		<if test="docCount != null">
+		  doc_count = #{docCount}
+		</if>
+		<if test="viewCount != null">
+		  view_count = #{viewCount}
+		</if>
+		<if test="voteCount != null">
+		  vote_count = #{voteCount}
+		</if>
+	  </trim>
+	</where>
+  </select>
+  <select id="selectByIds" resultMap="BaseResultMap">
+    select	<include refid="baseSelectFields"/>
+	from note
+	where id
+		<foreach collection="collection" item="item" open="in (" close=")" separator=",">
+			#{item}
+		</foreach>
+  </select>
+	<select id="selectLikeByNoteName" resultMap="BaseResultMap">
+    select <include refid="baseSelectFields"/>
+    from note
+    <where>
+      <if test="noteName != null and noteName != ''">
+        name like concat('%', #{noteName}, '%')
+      </if>
+    </where>
+  </select>
+</mapper>
