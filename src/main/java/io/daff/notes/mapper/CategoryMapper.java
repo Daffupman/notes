@@ -1,5 +1,6 @@
 package io.daff.notes.mapper;
 
+
 import io.daff.notes.entity.po.Category;
 
 import java.util.List;
@@ -24,4 +25,6 @@ public interface CategoryMapper {
     List<Category> selectByIds(List<Integer> ids);
 
     int batchUpdate(List<Category> records);
+
+    List<Category> selectLikeByCateName(String cateName);
 }

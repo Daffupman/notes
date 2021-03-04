@@ -11,7 +11,7 @@ import io.daff.notes.entity.vo.NoteVo;
  */
 public interface NoteService {
 
-    Page<NoteVo> queryNotes(NoteQueryForm noteQueryForm);
+    Page<NoteVo> query(NoteQueryForm noteQueryForm);
 
     Long saveOrUpdate(NoteForm noteForm);
 

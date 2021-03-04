@@ -31,7 +31,7 @@ public class NoteController {
     @GetMapping
     public Response<Page<NoteVo>> query(@Valid NoteQueryForm noteQueryForm) {
 
-        Page<NoteVo> notesPageInfo = noteService.queryNotes(noteQueryForm);
+        Page<NoteVo> notesPageInfo = noteService.query(noteQueryForm);
         return Response.ok(notesPageInfo);
     }
 

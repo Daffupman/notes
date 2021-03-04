@@ -91,4 +91,13 @@
 			where id = #{item.id}
 		</foreach>
   </update>
+  <select id="selectLikeByCateName" resultMap="BaseResultMap">
+    select <include refid="baseSelectFields"/>
+    from category
+    <where>
+      <if test="cateName != null and cateName != ''">
+        cate_name like concat('%', #{cateName}, '%')
+      </if>
+    </where>
+  </select>
 </mapper>

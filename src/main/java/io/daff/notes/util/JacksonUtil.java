@@ -41,11 +41,11 @@ public class JacksonUtil {
                 .addSerializer(new LocalDateTimeSerializer(dtf));
 
         // long类型自动转string类型
-        SimpleModule longToStringModule = new SimpleModule();
-        longToStringModule.addSerializer(Long.class, ToStringSerializer.instance);
-        longToStringModule.addSerializer(Long.TYPE, ToStringSerializer.instance);
+        // SimpleModule longToStringModule = new SimpleModule();
+        // longToStringModule.addSerializer(Long.class, ToStringSerializer.instance);
+        // longToStringModule.addSerializer(Long.TYPE, ToStringSerializer.instance);
 
-        return objectMapper.registerModules(javaTimeModule, longToStringModule)
+        return objectMapper.registerModules(javaTimeModule)
                 .configure(SerializationFeature.WRITE_DATE_KEYS_AS_TIMESTAMPS, false)
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .setDateFormat(sdf);

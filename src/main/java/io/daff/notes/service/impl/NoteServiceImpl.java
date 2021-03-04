@@ -31,7 +31,7 @@ public class NoteServiceImpl implements NoteService {
     private SnowFlake snowFlake;
 
     @Override
-    public Page<NoteVo> queryNotes(NoteQueryForm noteQueryForm) {
+    public Page<NoteVo> query(NoteQueryForm noteQueryForm) {
 
         PageHelper.startPage(noteQueryForm.getPageNum(), noteQueryForm.getPageSize());
         List<Note> notes = noteMapper.selectLikeByNoteName(noteQueryForm.getNoteName());
@@ -41,8 +41,8 @@ public class NoteServiceImpl implements NoteService {
         return Page.newPage(notePageInfo.getTotal(), noteVoVos);
     }
 
-    @Override
     @Transactional(rollbackFor = Exception.class)
+    @Override
     public Long saveOrUpdate(NoteForm noteForm) {
 
         Note note = CopyUtil.copy(noteForm, Note.class);
@@ -58,6 +58,7 @@ public class NoteServiceImpl implements NoteService {
         return rows > 0 ? note.getId() : 0L;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public boolean remove(Long id) {
         int rows = noteMapper.deleteByPrimaryKey(id);
