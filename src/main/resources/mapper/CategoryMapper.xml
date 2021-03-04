@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.daff.notes.mapper.CategoryMapper">
+  <resultMap id="BaseResultMap" type="io.daff.notes.entity.po.Category">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="cate_name" jdbcType="VARCHAR" property="cateName" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from category
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="io.daff.notes.entity.po.Category">
+    insert into category (id, cate_name, parent_id
+      )
+    values (#{id,jdbcType=INTEGER}, #{cateName,jdbcType=VARCHAR}, #{parentId,jdbcType=INTEGER}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="io.daff.notes.entity.po.Category">
+    update category
+    set cate_name = #{cateName,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, cate_name, parent_id
+    from category
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, cate_name, parent_id
+    from category
+  </select>
+  <sql id="baseSelectFields">
+    id, cate_name, parent_id
+  </sql>
+  <insert id="batchInsert" keyProperty="id" useGeneratedKeys="true">
+    insert into category(
+	  <trim suffixOverrides=",">
+		<if test="collection[0].cateName != null">cate_name,</if>
+		<if test="collection[0].parentId != null">parent_id,</if>
+	  </trim>
+	)
+	values
+	<foreach collection="list" item="item" separator=",">
+	(
+	  <trim suffixOverrides=",">
+		<if test="item.cateName != null">#{item.cateName},</if>
+		<if test="item.parentId != null">#{item.parentId},</if>
+	  </trim>
+	)
+	</foreach>
+  </insert>
+  <delete id="deleteByIds">
+    delete from category
+	where id
+	  <foreach collection="collection" item="item" open="in (" close=")" separator=",">
+		#{item}
+	  </foreach>
+  </delete>
+  <select id="select" resultMap="BaseResultMap">
+    select <include refid="baseSelectFields"/>
+	from category
+	<where>
+	  <trim suffixOverrides=",">
+		<if test="cateName != null and cateName != ''">
+		  cate_name = #{cateName}
+		</if>
+		<if test="parentId != null">
+		  parent_id = #{parentId}
+		</if>
+	  </trim>
+	</where>
+  </select>
+  <select id="selectByIds" resultMap="BaseResultMap">
+    select	<include refid="baseSelectFields"/>
+	from category
+	where id
+		<foreach collection="collection" item="item" open="in (" close=")" separator=",">
+			#{item}
+		</foreach>
+  </select>
+  <update id="batchUpdate">
+    <foreach collection="list" item="item" separator=",">
+			update category
+			set
+			<trim suffixOverrides=",">
+	    <if test="collection[0].cateName != null">cate_name = #{item.cateName},</if>
+	    <if test="collection[0].parentId != null">parent_id = #{item.parentId},</if>
+			</trim>
+			where id = #{item.id}
+		</foreach>
+  </update>
+</mapper>

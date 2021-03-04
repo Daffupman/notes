@@ -1,7 +1,6 @@
 package io.daff.notes.filter;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +13,7 @@ import java.io.IOException;
  * @since 2021/3/2
  */
 @Slf4j
-@Component
+//@Component
 public class LogFilter implements Filter {
 
     @Override

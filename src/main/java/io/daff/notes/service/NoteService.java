@@ -1,6 +1,8 @@
 package io.daff.notes.service;
 
 import io.daff.notes.entity.Page;
+import io.daff.notes.entity.form.NoteForm;
+import io.daff.notes.entity.form.NoteQueryForm;
 import io.daff.notes.entity.vo.NoteVo;
 
 /**
@@ -9,5 +11,9 @@ import io.daff.notes.entity.vo.NoteVo;
  */
 public interface NoteService {
 
-    Page<NoteVo> queryNotes(String noteName, Integer pageNum, Integer pageSize);
+    Page<NoteVo> queryNotes(NoteQueryForm noteQueryForm);
+
+    Long saveOrUpdate(NoteForm noteForm);
+
+    boolean remove(Long id);
 }

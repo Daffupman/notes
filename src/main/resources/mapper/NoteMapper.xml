@@ -16,7 +16,7 @@
     delete from note
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="io.daff.notes.entity.po.Note">
+  <insert id="insert" parameterType="io.daff.notes.entity.po.Note" useGeneratedKeys="true" keyProperty="id">
     insert into note (id, name, category1_id,
       category2_id, description, cover,
       doc_count, view_count, vote_count
@@ -55,6 +55,7 @@
   <insert id="batchInsert" keyProperty="id" useGeneratedKeys="true">
     insert into note(
 	  <trim suffixOverrides=",">
+		<if test="collection[0].id != null and collection[0].id != ''">id,</if>
 		<if test="collection[0].name != null and collection[0].name != ''">name,</if>
 		<if test="collection[0].category1Id != null">category1_id,</if>
 		<if test="collection[0].category2Id != null">category2_id,</if>
@@ -69,6 +70,7 @@
 	<foreach collection="list" item="item" separator=",">
 	(
 	  <trim suffixOverrides=",">
+		<if test="item.id != null">#{item.id},</if>
 		<if test="item.name != null and item.name != ''">#{item.name},</if>
 		<if test="item.category1Id != null">#{item.category1Id},</if>
 		<if test="item.category2Id != null">#{item.category2Id},</if>
@@ -128,6 +130,23 @@
 			#{item}
 		</foreach>
   </select>
+  <update id="batchUpdate">
+    <foreach collection="list" item="item" separator=",">
+      update note
+      set
+      <trim suffixOverrides=",">
+        <if test="collection[0].name != null">name = #{item.name},</if>
+        <if test="collection[0].category1Id != null">category1_id = #{item.category1Id},</if>
+        <if test="collection[0].category2Id != null">category2_id = #{item.category2Id},</if>
+        <if test="collection[0].description != null">description = #{item.description},</if>
+        <if test="collection[0].cover != null">cover = #{item.cover},</if>
+        <if test="collection[0].docCount != null">doc_count = #{item.docCount},</if>
+        <if test="collection[0].viewCount != null">view_count = #{item.viewCount},</if>
+        <if test="collection[0].voteCount != null">vote_count = #{item.voteCount},</if>
+      </trim>
+      where id = #{item.id}
+    </foreach>
+  </update>
 	<select id="selectLikeByNoteName" resultMap="BaseResultMap">
     select <include refid="baseSelectFields"/>
     from note

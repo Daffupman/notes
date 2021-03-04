@@ -1,0 +1,13 @@
+# 笔记列表
+GET http://localhost:10020/notes/note?pageNum=1000000000&pageSize=10&noteName=入门
+
+###
+
+# 新增、修改笔记
+PUT http://localhost:10020/notes/note
+Content-Type: application/json
+
+{
+  "name": "Go+Python混合开发",
+  "description": "Java程序员的福音"
+}

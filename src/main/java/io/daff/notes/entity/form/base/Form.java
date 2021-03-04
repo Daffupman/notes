@@ -21,19 +21,4 @@ public interface Form<T> {
     default String trim(String field) {
         return StringUtils.isEmpty(field) ? null : field.trim();
     }
-
-    /**
-     * 将Form的子类转换成对应的PO对象
-     */
-    T convertToPo();
-
-    /**
-     * 用于添加的表单
-     */
-    interface AddOperation {}
-
-    /**
-     * 用于修改的表单
-     */
-    interface EditOperation {}
 }
