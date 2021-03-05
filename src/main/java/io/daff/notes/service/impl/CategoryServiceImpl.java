@@ -2,6 +2,7 @@ package io.daff.notes.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import io.daff.exception.BusinessException;
 import io.daff.notes.entity.Page;
 import io.daff.notes.entity.form.CategoryForm;
 import io.daff.notes.entity.form.CategoryQueryForm;
@@ -28,7 +29,7 @@ public class CategoryServiceImpl implements CategoryService {
     private CategoryMapper categoryMapper;
 
     @Override
-    public Page<CategoryVo> query(CategoryQueryForm categoryQueryForm) {
+    public Page<CategoryVo> pageQuery(CategoryQueryForm categoryQueryForm) {
 
         PageHelper.startPage(categoryQueryForm.getPageNum(), categoryQueryForm.getPageSize());
         List<Category> categories = categoryMapper.selectLikeByCateName(categoryQueryForm.getCateName());
@@ -49,6 +50,9 @@ public class CategoryServiceImpl implements CategoryService {
             rows = categoryMapper.batchInsert(Collections.singletonList(category));
         } else {
             // update
+            if (categoryForm.getParentId().equals(category.getId())) {
+                throw new BusinessException("父分类不可更改为自己");
+            }
             rows = categoryMapper.batchUpdate(Collections.singletonList(category));
         }
         return rows > 0 ? category.getId() : 0L;
@@ -59,5 +63,10 @@ public class CategoryServiceImpl implements CategoryService {
     public boolean remove(Integer id) {
         int rows = categoryMapper.deleteByPrimaryKey(id);
         return rows > 0;
+    }
+
+    @Override
+    public List<Category> queryAll() {
+        return categoryMapper.selectAll();
     }
 }

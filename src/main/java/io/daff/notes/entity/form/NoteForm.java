@@ -21,9 +21,9 @@ public class NoteForm implements Form<NoteVo> {
     @ApiModelProperty("笔记描述")
     private String description;
     @ApiModelProperty("分类一")
-    private Integer categoryId1;
+    private Integer category1Id;
     @ApiModelProperty("分类二")
-    private Integer categoryId2;
+    private Integer category2Id;
     @ApiModelProperty("笔记封面")
     private String cover;
 

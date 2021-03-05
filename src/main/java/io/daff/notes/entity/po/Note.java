@@ -22,9 +22,9 @@ public class Note implements Serializable {
 
     private String name;
 
-    private Long category1Id;
+    private Integer category1Id;
 
-    private Long category2Id;
+    private Integer category2Id;
 
     private String description;
 

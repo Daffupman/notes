@@ -22,8 +22,8 @@ public class NoteVo {
     @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
     private String name;
-    private Long category1Id;
-    private Long category2Id;
+    private Integer category1Id;
+    private Integer category2Id;
     private String description;
     private String cover;
     private Integer docCount;

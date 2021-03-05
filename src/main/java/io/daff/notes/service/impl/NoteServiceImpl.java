@@ -10,6 +10,7 @@ import io.daff.notes.entity.vo.NoteVo;
 import io.daff.notes.mapper.NoteMapper;
 import io.daff.notes.service.NoteService;
 import io.daff.notes.util.CopyUtil;
+import io.daff.notes.util.PageUtil;
 import io.daff.notes.util.SnowFlake;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,8 +34,8 @@ public class NoteServiceImpl implements NoteService {
     @Override
     public Page<NoteVo> query(NoteQueryForm noteQueryForm) {
 
-        PageHelper.startPage(noteQueryForm.getPageNum(), noteQueryForm.getPageSize());
-        List<Note> notes = noteMapper.selectLikeByNoteName(noteQueryForm.getNoteName());
+        PageUtil.startPage(noteQueryForm, NoteVo.class);
+        List<Note> notes = noteMapper.selectLikeByForm(noteQueryForm);
 
         PageInfo<Note> notePageInfo = new PageInfo<>(notes);
         List<NoteVo> noteVoVos = CopyUtil.copyList(notePageInfo.getList(), NoteVo.class);

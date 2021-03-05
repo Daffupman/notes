@@ -1,0 +1,2 @@
+# 分类列表
+GET http://localhost:10020/notes/category/all

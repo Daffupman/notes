@@ -4,8 +4,10 @@ import io.daff.entity.Response;
 import io.daff.notes.entity.Page;
 import io.daff.notes.entity.form.CategoryForm;
 import io.daff.notes.entity.form.CategoryQueryForm;
+import io.daff.notes.entity.po.Category;
 import io.daff.notes.entity.vo.CategoryVo;
 import io.daff.notes.service.CategoryService;
+import io.daff.notes.util.CopyUtil;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponses;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @author daffupman
@@ -29,10 +32,21 @@ public class CategoryController {
     @ApiImplicitParams({})
     @ApiResponses({})
     @GetMapping
-    public Response<Page<CategoryVo>> query(@Valid CategoryQueryForm categoryQueryForm) {
+    public Response<Page<CategoryVo>> pageQuery(@Valid CategoryQueryForm categoryQueryForm) {
 
-        Page<CategoryVo> notesPageInfo = categoryService.query(categoryQueryForm);
+        Page<CategoryVo> notesPageInfo = categoryService.pageQuery(categoryQueryForm);
         return Response.ok(notesPageInfo);
+    }
+
+    @ApiOperation("分类列表")
+    @ApiImplicitParams({})
+    @ApiResponses({})
+    @GetMapping("/all")
+    public Response<List<CategoryVo>> query() {
+
+        List<Category> categories = categoryService.queryAll();
+        List<CategoryVo> categoryVos = CopyUtil.copyList(categories, CategoryVo.class);
+        return Response.ok(categoryVos);
     }
 
     @ApiOperation("保存分类")

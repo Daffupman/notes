@@ -1,7 +1,9 @@
 package io.daff.notes.mapper;
 
+import io.daff.notes.entity.form.NoteQueryForm;
 import io.daff.notes.entity.po.Note;
 import io.daff.notes.entity.vo.NoteVo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -26,5 +28,5 @@ public interface NoteMapper {
 
     int batchUpdate(List<Note> records);
 
-    List<Note> selectLikeByNoteName(String noteName);
+    List<Note> selectLikeByForm(@Param("form") NoteQueryForm form);
 }

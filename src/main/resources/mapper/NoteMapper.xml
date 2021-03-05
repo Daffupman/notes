@@ -147,12 +147,15 @@
       where id = #{item.id}
     </foreach>
   </update>
-	<select id="selectLikeByNoteName" resultMap="BaseResultMap">
+	<select id="selectLikeByForm" resultMap="BaseResultMap">
     select <include refid="baseSelectFields"/>
     from note
     <where>
-      <if test="noteName != null and noteName != ''">
-        name like concat('%', #{noteName}, '%')
+      <if test="form.noteName != null and form.noteName != ''">
+        and name like concat('%', #{form.noteName}, '%')
+      </if>
+      <if test="form.categoryId != null">
+        and category2_id = #{form.categoryId}
       </if>
     </where>
   </select>

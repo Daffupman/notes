@@ -16,6 +16,8 @@ public class NoteQueryForm extends QueryForm<NoteVo> {
 
     @ApiModelProperty("笔记名称")
     private String noteName;
+    @ApiModelProperty("分类id")
+    private Integer categoryId;
 
     @Override
     public void validate() {
