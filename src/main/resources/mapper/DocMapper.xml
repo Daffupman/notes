@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.daff.notes.mapper.DocMapper">
+  <resultMap id="BaseResultMap" type="io.daff.notes.entity.po.Doc">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="note_id" jdbcType="BIGINT" property="noteId" />
+    <result column="view_count" jdbcType="INTEGER" property="viewCount" />
+    <result column="vote_count" jdbcType="INTEGER" property="voteCount" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from doc
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="io.daff.notes.entity.po.Doc">
+    insert into doc (id, name, sort, 
+      parent_id, note_id, view_count, 
+      vote_count)
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, 
+      #{parentId,jdbcType=BIGINT}, #{noteId,jdbcType=BIGINT}, #{viewCount,jdbcType=INTEGER}, 
+      #{voteCount,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="io.daff.notes.entity.po.Doc">
+    update doc
+    set name = #{name,jdbcType=VARCHAR},
+      sort = #{sort,jdbcType=INTEGER},
+      parent_id = #{parentId,jdbcType=BIGINT},
+      note_id = #{noteId,jdbcType=BIGINT},
+      view_count = #{viewCount,jdbcType=INTEGER},
+      vote_count = #{voteCount,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select id, name, sort, parent_id, note_id, view_count, vote_count
+    from doc
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, name, sort, parent_id, note_id, view_count, vote_count
+    from doc
+  </select>
+  <sql id="baseSelectFields">
+    id, name, sort, parent_id, note_id, view_count, vote_count
+  </sql>
+  <insert id="batchInsert" keyProperty="id" useGeneratedKeys="true">
+    insert into doc(
+	  <trim suffixOverrides=",">
+		<if test="collection[0].id != null">id,</if>
+		<if test="collection[0].name != null">name,</if>
+		<if test="collection[0].sort != null">sort,</if>
+		<if test="collection[0].parentId != null">parent_id,</if>
+		<if test="collection[0].noteId != null">note_id,</if>
+		<if test="collection[0].viewCount != null">view_count,</if>
+		<if test="collection[0].voteCount != null">vote_count,</if>
+	  </trim>
+	)
+	values
+	<foreach collection="list" item="item" separator=",">
+	(
+	  <trim suffixOverrides=",">
+		<if test="item.id != null">#{item.id},</if>
+		<if test="item.name != null">#{item.name},</if>
+		<if test="item.sort != null">#{item.sort},</if>
+		<if test="item.parentId != null">#{item.parentId},</if>
+		<if test="item.noteId != null">#{item.noteId},</if>
+		<if test="item.viewCount != null">#{item.viewCount},</if>
+		<if test="item.voteCount != null">#{item.voteCount},</if>
+	  </trim>
+	)
+	</foreach>
+  </insert>
+  <delete id="deleteByIds">
+    delete from doc
+	where id
+	  <foreach collection="collection" item="item" open="in (" close=")" separator=",">
+		#{item}
+	  </foreach>
+  </delete>
+  <select id="select" resultMap="BaseResultMap">
+    select <include refid="baseSelectFields"/>
+	from doc
+	<where>
+	  <trim suffixOverrides=",">
+		<if test="name != null and name != ''">
+		  name = #{name}
+		</if>
+		<if test="sort != null">
+		  sort = #{sort}
+		</if>
+		<if test="parentId != null">
+		  parent_id = #{parentId}
+		</if>
+		<if test="noteId != null">
+		  note_id = #{noteId}
+		</if>
+		<if test="viewCount != null">
+		  view_count = #{viewCount}
+		</if>
+		<if test="voteCount != null">
+		  vote_count = #{voteCount}
+		</if>
+	  </trim>
+	</where>
+  </select>
+  <select id="selectByIds" resultMap="BaseResultMap">
+    select	<include refid="baseSelectFields"/>
+	from doc
+	where id
+		<foreach collection="collection" item="item" open="in (" close=")" separator=",">
+			#{item}
+		</foreach>
+  </select>
+	<select id="selectLikeByForm" resultType="io.daff.notes.entity.po.Doc">
+		select <include refid="baseSelectFields"/>
+		from doc
+		<where>
+			<if test="docName != null and docName != ''">
+				name like concat(#{docName}, '%')
+			</if>
+		</where>
+	</select>
+	<update id="batchUpdate">
+    <foreach collection="list" item="item" separator=",">
+			update doc
+			set
+			<trim suffixOverrides=",">
+	    <if test="collection[0].name != null">name = #{item.name},</if>
+	    <if test="collection[0].sort != null">sort = #{item.sort},</if>
+	    <if test="collection[0].parentId != null">parent_id = #{item.parentId},</if>
+	    <if test="collection[0].noteId != null">note_id = #{item.noteId},</if>
+	    <if test="collection[0].viewCount != null">view_count = #{item.viewCount},</if>
+	    <if test="collection[0].voteCount != null">vote_count = #{item.voteCount},</if>
+			</trim>
+			where id = #{item.id}
+		</foreach>
+  </update>
+</mapper>

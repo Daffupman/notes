@@ -1,0 +1,20 @@
+# 文档列表
+GET http://localhost:10020/notes/doc?pageNum=1&pageSize=10
+
+###
+
+# 新增、修改文档
+PUT http://localhost:10020/notes/doc
+Content-Type: application/json
+
+{
+  "name": "测试新增文档",
+  "parentId": 0,
+  "sort": 1,
+  "noteId": 22312910206406656
+}
+
+###
+
+# 分类列表
+GET http://localhost:10020/notes/doc/all

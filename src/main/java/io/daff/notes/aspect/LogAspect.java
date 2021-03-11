@@ -10,7 +10,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
  * @since 2021/3/3
  */
 @Aspect
-@Component
+// @Component
 @Slf4j
 public class LogAspect {
 
