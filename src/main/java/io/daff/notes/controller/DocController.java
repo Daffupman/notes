@@ -12,7 +12,13 @@ import io.daff.util.StringHelper;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponses;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -35,6 +41,7 @@ public class DocController {
     @GetMapping
     public Response<Page<DocVo>> query(@Valid DocQueryForm docQueryForm) {
 
+        docQueryForm.validate();
         Page<DocVo> docsPageInfo = docService.pageQuery(docQueryForm);
         return Response.ok(docsPageInfo);
     }
@@ -70,5 +77,15 @@ public class DocController {
         List<Doc> docs = docService.queryAll();
         List<DocVo> docVos = CopyUtil.copyList(docs, DocVo.class);
         return Response.ok(docVos);
+    }
+
+    @ApiOperation("查询文档内容")
+    @ApiImplicitParams({})
+    @ApiResponses({})
+    @GetMapping("/{id}/content")
+    public Response<String> queryContent(@PathVariable String id) {
+
+        long docId = StringHelper.parseLong(id);
+        return Response.ok(docService.queryContent(docId));
     }
 }

@@ -13,7 +13,7 @@ import javax.validation.constraints.DecimalMin;
  * @since 2020/8/17
  */
 @Data
-public abstract class QueryForm<T> implements Form<T> {
+public abstract class QueryForm implements Form {
 
     @ApiModelProperty("页码")
     @DecimalMin(value = "1", message = "页码最小为1，请重新输入")

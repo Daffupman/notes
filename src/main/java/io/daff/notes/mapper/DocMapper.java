@@ -2,6 +2,7 @@ package io.daff.notes.mapper;
 
 import io.daff.notes.entity.form.DocQueryForm;
 import io.daff.notes.entity.po.Doc;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -27,4 +28,6 @@ public interface DocMapper {
     int batchUpdate(List<Doc> records);
 
     List<Doc> selectLikeByForm(DocQueryForm docQueryForm);
+
+    List<Doc> selectByNoteId(@Param("noteId") String id);
 }

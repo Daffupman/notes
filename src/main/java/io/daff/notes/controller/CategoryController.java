@@ -11,7 +11,13 @@ import io.daff.notes.util.CopyUtil;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponses;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -34,6 +40,7 @@ public class CategoryController {
     @GetMapping
     public Response<Page<CategoryVo>> pageQuery(@Valid CategoryQueryForm categoryQueryForm) {
 
+        categoryQueryForm.validate();
         Page<CategoryVo> notesPageInfo = categoryService.pageQuery(categoryQueryForm);
         return Response.ok(notesPageInfo);
     }
@@ -53,7 +60,7 @@ public class CategoryController {
     @ApiImplicitParams({})
     @ApiResponses({})
     @PutMapping
-    public Response<Long> saveOrUpdate(@RequestBody CategoryForm noteForm) {
+    public Response<Long> saveOrUpdate(@RequestBody @Valid CategoryForm noteForm) {
 
         noteForm.validate();
         Long noteId = categoryService.saveOrUpdate(noteForm);

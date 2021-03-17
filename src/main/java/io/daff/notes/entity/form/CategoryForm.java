@@ -1,7 +1,6 @@
 package io.daff.notes.entity.form;
 
 import io.daff.notes.entity.form.base.Form;
-import io.daff.notes.entity.vo.NoteVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -12,7 +11,7 @@ import lombok.Data;
  */
 @Data
 @ApiModel("笔记表单")
-public class CategoryForm implements Form<NoteVo> {
+public class CategoryForm implements Form {
 
     @ApiModelProperty("分类id")
     private Integer id;

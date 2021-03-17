@@ -1,7 +1,6 @@
 package io.daff.notes.entity.form;
 
 import io.daff.notes.entity.form.base.QueryForm;
-import io.daff.notes.entity.vo.NoteVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -12,7 +11,7 @@ import lombok.Data;
  */
 @Data
 @ApiModel("文档查询表单")
-public class DocQueryForm extends QueryForm<NoteVo> {
+public class DocQueryForm extends QueryForm {
 
     @ApiModelProperty("文档名称")
     private String docName;

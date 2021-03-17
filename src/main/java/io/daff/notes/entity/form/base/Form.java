@@ -8,7 +8,7 @@ import org.springframework.util.StringUtils;
  * @author daffupman
  * @since 2020/8/21
  */
-public interface Form<T> {
+public interface Form {
 
     /**
      * 对参数的检查：如果是分页查询，需要检查sort的值是否合法，如果有其他的校验，可以写在这里

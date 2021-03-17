@@ -21,4 +21,6 @@ public interface DocService {
     boolean remove(List<Long> ids);
 
     List<Doc> queryAll();
+
+    String queryContent(Long id);
 }

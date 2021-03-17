@@ -1,7 +1,6 @@
 package io.daff.notes.entity.form;
 
 import io.daff.notes.entity.form.base.Form;
-import io.daff.notes.entity.po.Doc;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -15,7 +14,7 @@ import javax.validation.constraints.NotNull;
  */
 @Data
 @ApiModel("文档表单")
-public class DocForm implements Form<Doc> {
+public class DocForm implements Form {
 
     @ApiModelProperty("文档id")
     private Long id;
@@ -31,6 +30,8 @@ public class DocForm implements Form<Doc> {
     @ApiModelProperty("笔记id")
     @NotNull(message = "笔记id不能为空")
     private Long noteId;
+    @NotBlank(message = "文档内容不能为空")
+    private String content;
 
     @Override
     public void validate() {

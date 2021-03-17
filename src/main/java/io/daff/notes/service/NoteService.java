@@ -3,7 +3,10 @@ package io.daff.notes.service;
 import io.daff.notes.entity.Page;
 import io.daff.notes.entity.form.NoteForm;
 import io.daff.notes.entity.form.NoteQueryForm;
+import io.daff.notes.entity.vo.DocVo;
 import io.daff.notes.entity.vo.NoteVo;
+
+import java.util.List;
 
 /**
  * @author daffupman
@@ -16,4 +19,6 @@ public interface NoteService {
     Long saveOrUpdate(NoteForm noteForm);
 
     boolean remove(Long id);
+
+    List<DocVo> queryDocsByNoteId(String id);
 }

@@ -13,7 +13,7 @@ import java.util.Arrays;
  * @since 2020/8/17
  */
 @Data
-public abstract class SortedQueryForm<T> extends QueryForm<T> {
+public abstract class SortedQueryForm extends QueryForm {
 
     @ApiModelProperty("排序字段")
     private String sort;

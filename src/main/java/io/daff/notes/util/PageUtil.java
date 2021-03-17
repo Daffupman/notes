@@ -25,7 +25,7 @@ public class PageUtil {
     /**
      * 对QueryForm启用分页工具
      */
-    public static void startPage(QueryForm<?> queryForm, @NotNull Class<?> clazz) {
+    public static void startPage(QueryForm queryForm, @NotNull Class<?> clazz) {
 
         Integer pageNum = queryForm.getPageNum();
         Integer pageSize = queryForm.getPageSize();
@@ -40,7 +40,7 @@ public class PageUtil {
 
         if (queryForm instanceof SortedQueryForm) {
 
-            SortedQueryForm<?> sortedQueryForm = (SortedQueryForm<?>) queryForm;
+            SortedQueryForm sortedQueryForm = (SortedQueryForm) queryForm;
             String sort = sortedQueryForm.getSort();
             String ordinal = sortedQueryForm.getOrdinal();
             if (!StringUtils.isEmpty(sort) && StringUtils.isEmpty(ordinal) ||

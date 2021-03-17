@@ -1,12 +1,14 @@
 package io.daff.notes.service.impl;
 
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.daff.notes.entity.Page;
 import io.daff.notes.entity.form.NoteForm;
 import io.daff.notes.entity.form.NoteQueryForm;
+import io.daff.notes.entity.po.Doc;
 import io.daff.notes.entity.po.Note;
+import io.daff.notes.entity.vo.DocVo;
 import io.daff.notes.entity.vo.NoteVo;
+import io.daff.notes.mapper.DocMapper;
 import io.daff.notes.mapper.NoteMapper;
 import io.daff.notes.service.NoteService;
 import io.daff.notes.util.CopyUtil;
@@ -28,6 +30,8 @@ public class NoteServiceImpl implements NoteService {
 
     @Resource
     private NoteMapper noteMapper;
+    @Resource
+    private DocMapper docMapper;
     @Resource
     private SnowFlake snowFlake;
 
@@ -64,5 +68,11 @@ public class NoteServiceImpl implements NoteService {
     public boolean remove(Long id) {
         int rows = noteMapper.deleteByPrimaryKey(id);
         return rows > 0;
+    }
+
+    @Override
+    public List<DocVo> queryDocsByNoteId(String id) {
+        List<Doc> docs = docMapper.selectByNoteId(id);
+        return CopyUtil.copyList(docs, DocVo.class);
     }
 }

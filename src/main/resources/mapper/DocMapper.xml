@@ -121,7 +121,12 @@
 			</if>
 		</where>
 	</select>
-	<update id="batchUpdate">
+  <select id="selectByNoteId" resultMap="BaseResultMap">
+		select <include refid="baseSelectFields"/>
+		from doc
+		where note_id = #{noteId}
+	</select>
+  <update id="batchUpdate">
     <foreach collection="list" item="item" separator=",">
 			update doc
 			set
