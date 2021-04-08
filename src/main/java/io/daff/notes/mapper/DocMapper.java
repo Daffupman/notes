@@ -29,5 +29,11 @@ public interface DocMapper {
 
     List<Doc> selectLikeByForm(DocQueryForm docQueryForm);
 
-    List<Doc> selectByNoteId(@Param("noteId") String id);
+    List<Doc> selectByNoteId(@Param("noteId") long id);
+
+    int incrViewCount(long id);
+
+    int incrVoteCount(long id);
+
+    void refreshDocs();
 }

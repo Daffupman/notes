@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public Response<Void> error(HttpMessageNotReadableException e) {
-        log.error("入参有误", e);
+        log.info("入参有误", e);
         return Response.error(Codes.SYSTEM_ERROR, "参数格式有误");
     }
 
@@ -42,31 +42,31 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public Response<Void> error(HttpRequestMethodNotSupportedException e) {
-        log.error(e.getMessage(), e);
+        log.info(e.getMessage(), e);
         return Response.error(Codes.FILE_UPLOAD_ERROR, "请求方法错误，请确认后重试");
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public Response<Void> error(MaxUploadSizeExceededException e) {
-        log.error(e.getMessage(), e);
+        log.info(e.getMessage(), e);
         return Response.error(Codes.FILE_UPLOAD_ERROR, "上传的文件过大，请压缩或降低画质后上传");
     }
 
     @ExceptionHandler(BindException.class)
     public Response<Void> error(BindException e) {
-        log.error(e.getMessage(), e);
+        log.info(e.getMessage(), e);
         return Response.error(Codes.PARAM_VALIDATE_ERROR, e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
     }
 
     @ExceptionHandler(UnexpectedException.class)
     public Response<Void> error(UnexpectedException e) {
-        log.error(e.getMessage(), e);
+        log.info(e.getMessage(), e);
         return Response.error(Codes.UNEXPECTED_ERROR, e.getMessage());
     }
 
     @ExceptionHandler(BaseException.class)
     public Response<Void> error(BaseException e) {
-        log.error(e.getMessage(), e);
+        log.info(e.getMessage(), e);
         return Response.error(e.getCodes(), e.getMessage());
     }
 
@@ -81,19 +81,19 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Response<Void> error(MethodArgumentNotValidException e) {
-        log.error(e.getMessage(), e);
+        log.info(e.getMessage(), e);
         return Response.error(Codes.PARAM_VALIDATE_ERROR, e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public Response<Void> error(ConstraintViolationException e) {
-        log.error(e.getMessage(), e);
+        log.info(e.getMessage(), e);
         return Response.error(Codes.PARAM_VALIDATE_ERROR, e.getConstraintViolations().iterator().next().getMessage());
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public Response<Void> error(MissingServletRequestParameterException e) {
-        log.error(e.getMessage(), e);
+        log.info(e.getMessage(), e);
         return Response.error(Codes.PARAM_MISS_ERROR, "请求参数缺失：" + e.getParameterName());
     }
 }

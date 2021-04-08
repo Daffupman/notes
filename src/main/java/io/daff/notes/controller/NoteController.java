@@ -7,6 +7,7 @@ import io.daff.notes.entity.form.NoteQueryForm;
 import io.daff.notes.entity.vo.DocVo;
 import io.daff.notes.entity.vo.NoteVo;
 import io.daff.notes.service.NoteService;
+import io.daff.util.StringHelper;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponses;
@@ -71,7 +72,7 @@ public class NoteController {
     @GetMapping("/{id}/docs")
     public Response<List<DocVo>> queryDocsByNoteId(@PathVariable String id) {
 
-        List<DocVo> docVos = noteService.queryDocsByNoteId(id);
+        List<DocVo> docVos = noteService.queryDocsByNoteId(StringHelper.parseLong(id));
         return Response.ok(docVos);
     }
 }

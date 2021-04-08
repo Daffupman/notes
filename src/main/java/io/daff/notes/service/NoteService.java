@@ -20,5 +20,5 @@ public interface NoteService {
 
     boolean remove(Long id);
 
-    List<DocVo> queryDocsByNoteId(String id);
+    List<DocVo> queryDocsByNoteId(long id);
 }

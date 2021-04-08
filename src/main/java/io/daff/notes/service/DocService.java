@@ -23,4 +23,8 @@ public interface DocService {
     List<Doc> queryAll();
 
     String queryContent(Long id);
+
+    boolean voteDoc(long docId);
+
+    void refreshDocs();
 }

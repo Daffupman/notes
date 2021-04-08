@@ -88,4 +88,14 @@ public class DocController {
         long docId = StringHelper.parseLong(id);
         return Response.ok(docService.queryContent(docId));
     }
+
+    @ApiOperation("点赞文档")
+    @ApiImplicitParams({})
+    @ApiResponses({})
+    @GetMapping("/{id}/voting")
+    public Response<Boolean> voteDoc(@PathVariable String id) {
+
+        long docId = StringHelper.parseLong(id);
+        return Response.ok(docService.voteDoc(docId));
+    }
 }

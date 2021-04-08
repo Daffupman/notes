@@ -1,13 +1,16 @@
 package io.daff.notes.aspect;
 
 import io.daff.notes.anno.Monitor;
+import io.daff.notes.util.IpRequestContext;
 import io.daff.notes.util.JacksonUtil;
+import io.daff.notes.util.SnowFlake;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.MDC;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.InputStreamSource;
@@ -16,6 +19,7 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +44,11 @@ import static java.util.stream.Collectors.toMap;
 @Order(Ordered.HIGHEST_PRECEDENCE + 1)  // 将优先级设置为最高，可以防止Spring事务捕获不到异常
 public class MonitorAspect {
 
+    @Resource
+    private HttpServletRequest request;
+    @Resource
+    private SnowFlake snowFlake;
+
     //实现一个返回Java基本类型默认值的工具。其实，你也可以逐一写很多if-else判断类型，然后手动设置其默认值。这里为了减少代码量用了一个小技巧，即通过初始化一个具有1个元素的数组，然后通过获取这个数组的值来获取基本类型默认值
     private static final Map<Class<?>, Object> DEFAULT_VALUES = Stream.of(
             boolean.class, byte.class, char.class, double.class,
@@ -62,6 +71,12 @@ public class MonitorAspect {
 
     @Around("controllerBean() || withMetricsAnnotation())")
     public Object metrics(ProceedingJoinPoint pjp) throws Throwable {
+
+        // 设置远程ip
+        IpRequestContext.setIp(getRemoteIp(request));
+        // 设置MDC
+        MDC.put("LOG_ID", "LID_" + snowFlake.nextId());
+
         //通过连接点获取方法签名和方法上Metrics注解，并根据方法签名生成日志中要输出的方法定义描述
         MethodSignature signature = (MethodSignature) pjp.getSignature();
         String name = String.format("【%s】【%s】", signature.getDeclaringType().toString(), signature.toLongString());
@@ -102,10 +117,10 @@ public class MonitorAspect {
             }
         } catch (Exception e) {
             if (monitor.recordExecuteFailureTimeCost()) {
-                log.error(String.format("【MONITOR - 失败】调用 %s 失败，耗时：%d ms", name, Duration.between(start, Instant.now()).toMillis()));
+                log.info(String.format("【MONITOR - 失败】调用 %s 失败，耗时：%d ms", name, Duration.between(start, Instant.now()).toMillis()));
             }
             if (monitor.recordException()) {
-                log.error(String.format("【MONITOR - 异常】调用 %s 出现异常！", name));
+                log.info(String.format("【MONITOR - 异常】调用 %s 出现异常！", name));
             }
 
             //忽略异常的时候，使用一开始定义的getDefaultValue方法，来获取基本类型的默认值
@@ -121,6 +136,23 @@ public class MonitorAspect {
             log.info(String.format("【MONITOR - 出参】调用 %s 的返回：【%s】", name, JacksonUtil.fromBean(returnValue)));
         }
         return returnValue;
+    }
+
+    /**
+     * 使用nginx做反向代理，需要用该方法才能取到真实的远程IP
+     */
+    private String getRemoteIp(HttpServletRequest request) {
+        String ip = request.getHeader("x-forwarded-for");
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        return ip;
     }
 
     /**

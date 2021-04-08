@@ -141,4 +141,19 @@
 			where id = #{item.id}
 		</foreach>
   </update>
+	<update id="incrViewCount">
+		update doc
+		set view_count = view_count + 1
+		where id = #{id}
+	</update>
+	<update id="incrVoteCount">
+		update doc
+		set vote_count = vote_count + 1
+		where id = #{id}
+	</update>
+	<update id="refreshDocs">
+		update note n, (select note_id, count(1) doc_count, sum(view_count) view_count, sum(vote_count) vote_count from doc group by note_id) tmp
+		set n.doc_count = tmp.doc_count, n.view_count = tmp.view_count, n.vote_count = tmp.vote_count
+		where n.id = tmp.note_id
+	</update>
 </mapper>

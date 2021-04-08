@@ -22,4 +22,6 @@ public class DocVo {
     private String name;
     private Long parentId;
     private Integer sort;
+    private Integer viewCount;
+    private Integer voteCount;
 }

@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.daff.enums.Codes;
 import io.daff.exception.BaseException;
+import io.daff.exception.BusinessException;
 import io.daff.notes.entity.Page;
 import io.daff.notes.entity.form.DocForm;
 import io.daff.notes.entity.form.DocQueryForm;
@@ -14,11 +15,14 @@ import io.daff.notes.mapper.ContentMapper;
 import io.daff.notes.mapper.DocMapper;
 import io.daff.notes.service.DocService;
 import io.daff.notes.util.CopyUtil;
+import io.daff.notes.util.IpRequestContext;
 import io.daff.notes.util.PageUtil;
+import io.daff.notes.util.SimpleRedisUtil;
 import io.daff.notes.util.SnowFlake;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.Collections;
@@ -38,6 +42,8 @@ public class DocServiceImpl implements DocService {
     private ContentMapper contentMapper;
     @Resource
     private SnowFlake snowFlake;
+    @Resource
+    private SimpleRedisUtil simpleRedisUtil;
 
     @Override
     public Page<DocVo> pageQuery(DocQueryForm docQueryForm) {
@@ -98,9 +104,30 @@ public class DocServiceImpl implements DocService {
         return docMapper.selectAll();
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public String queryContent(Long id) {
         Content content = contentMapper.selectByPrimaryKey(id);
+        docMapper.incrViewCount(id);
         return content == null ? null : content.getContent();
+    }
+
+    @Override
+    public boolean voteDoc(long docId) {
+
+        String ip = IpRequestContext.getIp();
+        String voteKey = "DOC_" + docId + "_" + ip;
+        if (!StringUtils.isEmpty(simpleRedisUtil.get(voteKey))) {
+            throw new BusinessException("您已经点赞过了");
+        }
+
+        int rows = docMapper.incrVoteCount(docId);
+        simpleRedisUtil.set(voteKey, "SET_DOWN", 24 * 60 * 60);
+        return rows > 0;
+    }
+
+    @Override
+    public void refreshDocs() {
+        docMapper.refreshDocs();
     }
 }

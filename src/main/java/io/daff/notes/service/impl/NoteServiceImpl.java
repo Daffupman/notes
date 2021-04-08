@@ -71,7 +71,7 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public List<DocVo> queryDocsByNoteId(String id) {
+    public List<DocVo> queryDocsByNoteId(long id) {
         List<Doc> docs = docMapper.selectByNoteId(id);
         return CopyUtil.copyList(docs, DocVo.class);
     }
