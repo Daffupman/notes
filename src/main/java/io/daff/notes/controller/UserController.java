@@ -6,11 +6,13 @@ import io.daff.notes.entity.form.LoginForm;
 import io.daff.notes.entity.form.PasswordResetForm;
 import io.daff.notes.entity.form.UserForm;
 import io.daff.notes.entity.form.UserQueryForm;
+import io.daff.notes.entity.vo.LoginVo;
 import io.daff.notes.entity.vo.UserVo;
 import io.daff.notes.service.UserService;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponses;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +33,7 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping("/user")
+@Slf4j
 public class UserController {
 
     @Resource
@@ -85,10 +88,10 @@ public class UserController {
     @ApiImplicitParams({})
     @ApiResponses({})
     @PostMapping("/login")
-    public Response<Boolean> login(@RequestBody @Valid LoginForm loginForm) {
+    public Response<LoginVo> login(@RequestBody @Valid LoginForm loginForm) {
 
         loginForm.setPassword(DigestUtils.md5DigestAsHex(loginForm.getPassword().getBytes()));
-        userService.login(loginForm);
-        return Response.ok();
+        LoginVo login = userService.login(loginForm);
+        return Response.ok(login);
     }
 }

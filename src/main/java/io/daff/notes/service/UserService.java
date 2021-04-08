@@ -5,6 +5,7 @@ import io.daff.notes.entity.form.LoginForm;
 import io.daff.notes.entity.form.PasswordResetForm;
 import io.daff.notes.entity.form.UserForm;
 import io.daff.notes.entity.form.UserQueryForm;
+import io.daff.notes.entity.vo.LoginVo;
 import io.daff.notes.entity.vo.UserVo;
 
 /**
@@ -21,5 +22,5 @@ public interface UserService {
 
     boolean resetPassword(PasswordResetForm passwordResetForm);
 
-    void login(LoginForm loginForm);
+    LoginVo login(LoginForm loginForm);
 }
