@@ -2,6 +2,7 @@ package io.daff.notes.service;
 
 import io.daff.notes.entity.Page;
 import io.daff.notes.entity.form.LoginForm;
+import io.daff.notes.entity.form.LogoutForm;
 import io.daff.notes.entity.form.PasswordResetForm;
 import io.daff.notes.entity.form.UserForm;
 import io.daff.notes.entity.form.UserQueryForm;
@@ -23,4 +24,6 @@ public interface UserService {
     boolean resetPassword(PasswordResetForm passwordResetForm);
 
     LoginVo login(LoginForm loginForm);
+
+    boolean logout(LogoutForm logoutForm);
 }

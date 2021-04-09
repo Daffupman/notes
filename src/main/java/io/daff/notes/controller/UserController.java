@@ -3,6 +3,7 @@ package io.daff.notes.controller;
 import io.daff.entity.Response;
 import io.daff.notes.entity.Page;
 import io.daff.notes.entity.form.LoginForm;
+import io.daff.notes.entity.form.LogoutForm;
 import io.daff.notes.entity.form.PasswordResetForm;
 import io.daff.notes.entity.form.UserForm;
 import io.daff.notes.entity.form.UserQueryForm;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author daffupman
@@ -93,5 +95,15 @@ public class UserController {
         loginForm.setPassword(DigestUtils.md5DigestAsHex(loginForm.getPassword().getBytes()));
         LoginVo login = userService.login(loginForm);
         return Response.ok(login);
+    }
+
+    @ApiOperation("登出")
+    @ApiImplicitParams({})
+    @ApiResponses({})
+    @PostMapping("/logout")
+    public Response<Boolean> logout(@RequestBody @Valid @NotNull LogoutForm logoutForm) {
+
+        boolean success = userService.logout(logoutForm);
+        return Response.ok(success);
     }
 }

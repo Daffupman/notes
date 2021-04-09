@@ -7,8 +7,10 @@ import io.daff.enums.Codes;
 import io.daff.enums.Messages;
 import io.daff.exception.BaseException;
 import io.daff.exception.BusinessException;
+import io.daff.exception.SystemInternalException;
 import io.daff.notes.entity.Page;
 import io.daff.notes.entity.form.LoginForm;
+import io.daff.notes.entity.form.LogoutForm;
 import io.daff.notes.entity.form.PasswordResetForm;
 import io.daff.notes.entity.form.UserForm;
 import io.daff.notes.entity.form.UserQueryForm;
@@ -118,6 +120,22 @@ public class UserServiceImpl implements UserService {
         }
 
         return loginVo;
+    }
+
+    @Override
+    public boolean logout(LogoutForm logoutForm) {
+        String loginVoJson = simpleRedisUtil.get(logoutForm.getToken());
+        try {
+            LoginVo loginVo = objectMapper.readValue(loginVoJson, LoginVo.class);
+            if (!loginVo.getId().equals(logoutForm.getId())) {
+                throw new BusinessException("用户与token不一致");
+            }
+        } catch (JsonProcessingException e) {
+            log.error("反序列化异常", e);
+            throw new SystemInternalException();
+        }
+        simpleRedisUtil.delete(logoutForm.getToken());
+        return true;
     }
 
 }
