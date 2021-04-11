@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.daff.notes.mapper.NoteSnapshotMapper">
+  <resultMap id="BaseResultMap" type="io.daff.notes.entity.po.NoteSnapshot">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="note_id" jdbcType="BIGINT" property="noteId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="view_count" jdbcType="INTEGER" property="viewCount" />
+    <result column="vote_count" jdbcType="INTEGER" property="voteCount" />
+    <result column="view_increase" jdbcType="INTEGER" property="viewIncrease" />
+    <result column="vote_increase" jdbcType="INTEGER" property="voteIncrease" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from note_snapshot
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="io.daff.notes.entity.po.NoteSnapshot">
+    insert into note_snapshot (id, note_id, create_time, 
+      view_count, vote_count, view_increase, 
+      vote_increase)
+    values (#{id,jdbcType=BIGINT}, #{noteId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{viewCount,jdbcType=INTEGER}, #{voteCount,jdbcType=INTEGER}, #{viewIncrease,jdbcType=INTEGER}, 
+      #{voteIncrease,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="io.daff.notes.entity.po.NoteSnapshot">
+    update note_snapshot
+    set note_id = #{noteId,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      view_count = #{viewCount,jdbcType=INTEGER},
+      vote_count = #{voteCount,jdbcType=INTEGER},
+      view_increase = #{viewIncrease,jdbcType=INTEGER},
+      vote_increase = #{voteIncrease,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select id, note_id, create_time, view_count, vote_count, view_increase, vote_increase
+    from note_snapshot
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, note_id, create_time, view_count, vote_count, view_increase, vote_increase
+    from note_snapshot
+  </select>
+  <sql id="baseSelectFields">
+    id, note_id, create_time, view_count, vote_count, view_increase, vote_increase
+  </sql>
+  <insert id="batchInsert" keyProperty="id" useGeneratedKeys="true">
+    insert into note_snapshot(
+	  <trim suffixOverrides=",">
+		<if test="collection[0].id != null">id,</if>
+		<if test="collection[0].noteId != null">note_id,</if>
+		<if test="collection[0].createTime != null">create_time,</if>
+		<if test="collection[0].viewCount != null">view_count,</if>
+		<if test="collection[0].voteCount != null">vote_count,</if>
+		<if test="collection[0].viewIncrease != null">view_increase,</if>
+		<if test="collection[0].voteIncrease != null">vote_increase,</if>
+	  </trim>
+	)
+	values
+	<foreach collection="list" item="item" separator=",">
+	(
+	  <trim suffixOverrides=",">
+		<if test="item.id != null">#{item.id},</if>
+		<if test="item.noteId != null">#{item.noteId},</if>
+		<if test="item.createTime != null">#{item.createTime},</if>
+		<if test="item.viewCount != null">#{item.viewCount},</if>
+		<if test="item.voteCount != null">#{item.voteCount},</if>
+		<if test="item.viewIncrease != null">#{item.viewIncrease},</if>
+		<if test="item.voteIncrease != null">#{item.voteIncrease},</if>
+	  </trim>
+	)
+	</foreach>
+  </insert>
+  <delete id="deleteByIds">
+    delete from note_snapshot
+	where id
+	  <foreach collection="collection" item="item" open="in (" close=")" separator=",">
+		#{item}
+	  </foreach>
+  </delete>
+  <select id="select" resultMap="BaseResultMap">
+    select <include refid="baseSelectFields"/>
+	from note_snapshot
+	<where>
+	  <trim suffixOverrides=",">
+		<if test="noteId != null">
+		  note_id = #{noteId}
+		</if>
+		<if test="createTime != null">
+		  create_time = #{createTime}
+		</if>
+		<if test="viewCount != null">
+		  view_count = #{viewCount}
+		</if>
+		<if test="voteCount != null">
+		  vote_count = #{voteCount}
+		</if>
+		<if test="viewIncrease != null">
+		  view_increase = #{viewIncrease}
+		</if>
+		<if test="voteIncrease != null">
+		  vote_increase = #{voteIncrease}
+		</if>
+	  </trim>
+	</where>
+  </select>
+  <select id="selectByIds" resultMap="BaseResultMap">
+    select	<include refid="baseSelectFields"/>
+	from note_snapshot
+	where id
+		<foreach collection="collection" item="item" open="in (" close=")" separator=",">
+			#{item}
+		</foreach>
+  </select>
+  <update id="batchUpdate">
+    <foreach collection="list" item="item" separator=",">
+			update note_snapshot
+			set
+			<trim suffixOverrides=",">
+	    <if test="collection[0].noteId != null">note_id = #{item.noteId},</if>
+	    <if test="collection[0].createTime != null">create_time = #{item.createTime},</if>
+	    <if test="collection[0].viewCount != null">view_count = #{item.viewCount},</if>
+	    <if test="collection[0].voteCount != null">vote_count = #{item.voteCount},</if>
+	    <if test="collection[0].viewIncrease != null">view_increase = #{item.viewIncrease},</if>
+	    <if test="collection[0].voteIncrease != null">vote_increase = #{item.voteIncrease},</if>
+			</trim>
+			where id = #{item.id}
+		</foreach>
+  </update>
+	<update id="generate">
+		insert into note_snapshot(note_id, create_time, view_count, vote_count, view_increase, vote_increase)
+		select t1.id, curdate(), 0, 0, 0, 0
+		from note t1
+		where not exists(select 1 from note_snapshot t2 where t1.id = t2.note_id and t2.create_time = curdate());
+
+		update note_snapshot t1, note t2
+		set t1.view_count = t2.view_count,
+			t1.vote_count = t2.vote_count
+		where t1.`create_time` = curdate()
+		and t1.note_id = t2.id;
+
+		update note_snapshot t1 left join (select note_id, view_count, vote_count
+			from note_snapshot
+			where `create_time` = date_sub(curdate(), interval 1 day)) t2
+		on t1.note_id = t2.note_id
+			set t1.view_increase = (t1.view_count - ifnull(t2.view_count, 0)),
+				t1.vote_increase = (t1.vote_count - ifnull(t2.vote_count, 0))
+		where t1.`create_time` = curdate();
+	</update>
+</mapper>
