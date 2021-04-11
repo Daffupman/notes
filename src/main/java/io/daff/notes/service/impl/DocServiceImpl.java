@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import io.daff.enums.Codes;
 import io.daff.exception.BaseException;
 import io.daff.exception.BusinessException;
+import io.daff.exception.NoSuchDataException;
 import io.daff.notes.entity.Page;
 import io.daff.notes.entity.form.DocForm;
 import io.daff.notes.entity.form.DocQueryForm;
@@ -14,14 +15,17 @@ import io.daff.notes.entity.vo.DocVo;
 import io.daff.notes.mapper.ContentMapper;
 import io.daff.notes.mapper.DocMapper;
 import io.daff.notes.service.DocService;
+import io.daff.notes.service.WsService;
 import io.daff.notes.util.CopyUtil;
 import io.daff.notes.util.IpRequestContext;
 import io.daff.notes.util.PageUtil;
 import io.daff.notes.util.SimpleRedisUtil;
 import io.daff.notes.util.SnowFlake;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
@@ -44,6 +48,8 @@ public class DocServiceImpl implements DocService {
     private SnowFlake snowFlake;
     @Resource
     private SimpleRedisUtil simpleRedisUtil;
+    @Resource
+    private WsService wsService;
 
     @Override
     public Page<DocVo> pageQuery(DocQueryForm docQueryForm) {
@@ -112,10 +118,15 @@ public class DocServiceImpl implements DocService {
         return content == null ? null : content.getContent();
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public boolean voteDoc(long docId) {
 
         String ip = IpRequestContext.getIp();
+        List<Doc> docs = docMapper.selectByIds(Collections.singletonList(docId));
+        if (CollectionUtils.isEmpty(docs)) {
+            throw new NoSuchDataException("无效的文档");
+        }
         String voteKey = "DOC_" + docId + "_" + ip;
         if (!StringUtils.isEmpty(simpleRedisUtil.get(voteKey))) {
             throw new BusinessException("您已经点赞过了");
@@ -123,6 +134,7 @@ public class DocServiceImpl implements DocService {
 
         int rows = docMapper.incrVoteCount(docId);
         simpleRedisUtil.set(voteKey, "SET_DOWN", 24 * 60 * 60);
+        wsService.sendInfo(docs.get(0).getName(), MDC.get("LOG_ID"));
         return rows > 0;
     }
 
