@@ -6,7 +6,9 @@ import io.daff.notes.entity.form.NoteForm;
 import io.daff.notes.entity.form.NoteQueryForm;
 import io.daff.notes.entity.vo.DocVo;
 import io.daff.notes.entity.vo.NoteVo;
+import io.daff.notes.entity.vo.StatisticVo;
 import io.daff.notes.service.NoteService;
+import io.daff.notes.service.NoteSnapshotService;
 import io.daff.util.StringHelper;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -33,6 +35,8 @@ public class NoteController {
 
     @Resource
     private NoteService noteService;
+    @Resource
+    private NoteSnapshotService noteSnapshotService;
 
     @ApiOperation("笔记列表")
     @ApiImplicitParams({})
@@ -74,5 +78,21 @@ public class NoteController {
 
         List<DocVo> docVos = noteService.queryDocsByNoteId(StringHelper.parseLong(id));
         return Response.ok(docVos);
+    }
+
+    @ApiOperation("查询首页统计信息")
+    @ApiImplicitParams({})
+    @ApiResponses({})
+    @GetMapping("/statistics")
+    public Response<List<StatisticVo>> queryStatistics() {
+        return Response.ok(noteSnapshotService.queryStatistic());
+    }
+
+    @ApiOperation("查询首页统计信息")
+    @ApiImplicitParams({})
+    @ApiResponses({})
+    @GetMapping("/statistics30")
+    public Response<List<StatisticVo>> queryStatistics30() {
+        return Response.ok(noteSnapshotService.queryStatistic30());
     }
 }

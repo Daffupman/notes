@@ -1,6 +1,7 @@
 package io.daff.notes.mapper;
 
 import io.daff.notes.entity.po.NoteSnapshot;
+import io.daff.notes.entity.vo.StatisticVo;
 
 import java.util.List;
 
@@ -26,4 +27,8 @@ public interface NoteSnapshotMapper {
     int batchUpdate(List<NoteSnapshot> records);
 
     void generate();
+
+    List<StatisticVo> statistics();
+
+    List<StatisticVo> statistics30();
 }
